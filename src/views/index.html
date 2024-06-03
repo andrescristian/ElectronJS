@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../public/css/style.css">
+    <!-- Evita ataques de Cross Site Scripting (Injeção de dados) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'">
+    <!-- Observação: unsafe-inline permite executar eventos que executam funções (Passo 1.3 do CRUD Update no renderer.js) -->
+    <title>Tutorial Electron</title>
+</head>
+
+<body>
+    <main>
+        <h1>Lista de Tarefas &#x2713;</h1>
+        <form id="frmTarefas">
+            <input type="text" id="txtTarefa" placeholder="Tarefa" maxlength="11" autofocus>
+            <input type="text" id="txtDescricao" placeholder="Descrição" maxlength="14">
+            <input type="submit" value="Salvar" id="btnSalvar">
+        </form>
+        <!-- Passo 4.1 Lista de tarefas pendentes (O JavaScript vai preencher automaticamente a ul) -->
+        <div class="Container">
+            <ul id="listaTarefas"></ul>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer>
+        <p id="data"> Data: </p>
+        <img src="../public/img/dboff.png" alt="status do banco" id="status">
+    </footer>
+
+    <!-- Exemplo de uso do preload -->
+    <div id="mensagem"> </div>
+
+    <!-- JavaScript -->
+    <script src="../public/js/renderer.js"></script>
+</body>
+
+</html>
