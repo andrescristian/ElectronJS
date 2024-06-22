@@ -8,10 +8,6 @@ console.log("Hello Electron! Processo Principal do Node.JS (Back-End)")
 //Importar o Electron
 const { app, BrowserWindow, Menu, shell, ipcMain, dialog } = require('electron')
 
-/**
- * app  --> 
- */
-
 //Definir o Path(preload.js)
 const path = require('node:path')
 
@@ -32,11 +28,11 @@ const createWindow = () => {
         width: 800, //Largura da Janela
         height: 600, //Altura da Janela
         resizable: true, //Evita redimensionamento (Não deixa a Janela aumentar)
-        title: "Tutorial Electron", //Coloca um Título
+        title: "Tutorial Electron", //Coloca um Título nesta janela criada
         //autoHideMenuBar: true ,      //Esconde ou Substitui o Menu que vem automático
         icon: `${__dirname}/src/public/img/pc.png`,  //Coloca um Ícone ${__dirname} --> Caminho Absoluto
         webPreferences: {
-            nodeIntegration: true,//
+            nodeIntegration: true,
             contextIsolation: false,
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true, //Faz com que execute recursos do Node tanto no back, tanto no front
@@ -44,10 +40,10 @@ const createWindow = () => {
         }
     })
 
-    //Carregar um documento HTML na Janela Principal (Depois de criar a Janela Principal)
+    //Carrega a página HTML na Janela Principal (Depois de criar a Janela Principal)
     win.loadFile(`${__dirname}/src/views/index.html`)
 
-    //Carregar o Menu  Personalizado
+    //Carrega o Menu  Personalizado
     const menuPersonalizado = Menu.buildFromTemplate(menuTemplate)//Esta linha vai ser onde vou Personalizar
     Menu.setApplicationMenu(menuPersonalizado)
 
@@ -182,8 +178,7 @@ ipcMain.on('send-message', (event, message) => {
     statusConexao()
 })
 
-
-/*Status de Conexão*/
+         /* -------------------------------------------------------- STATUS DE CONEXÃO --------------------------------------------------------------  */
 const statusConexao = async () => {
     try {
         await conectar()
@@ -193,11 +188,13 @@ const statusConexao = async () => {
         win.webContents.send('db-status', `Erro de conexão: ${error.message}`)
     }
 }
-/*Fim do Status de Conexão*/
+         /* -------------------------------------------------------- STATUS DE CONEXÃO --------------------------------------------------------------  */
 
-/* Começo das 4 Operações Back-end CRUD */
+                                                                    /* ------------- */
+    
+         /* -------------------------------------------------------- 1º ETAPA DO CRUD --------------------------------------------------------------  */
 
-/*Começo do CREATE */
+/* Início do CREATE */
 //1º - CRUD Create
 //Receber os Dados = on
 ipcMain.on('new-task', async (event, args) => {
@@ -233,9 +230,15 @@ ipcMain.on('new-task', async (event, args) => {
         event.reply('new-task-created', JSON.stringify(novaTarefa))
     }
 })
-/*Fim do CREATE */
+/* Fim do CREATE */
 
-/*Começo do READ */
+         /* -------------------------------------------------------- 1º ETAPA DO CRUD --------------------------------------------------------------  */
+
+                                                                    /* ------------- */
+
+         /* -------------------------------------------------------- 2º ETAPA DO CRUD --------------------------------------------------------------  */
+
+/* Início do READ */
 //2º - CRUD READ
 //Passo 2 (Slide) Fazer uma busca no Banco de Dados de todas as tarefas pendentes
 ipcMain.on('get-tasks', async (event, args) => {
@@ -245,11 +248,15 @@ ipcMain.on('get-tasks', async (event, args) => {
     //Passo 3 (Slide) Enviar ao Renderer (View) as Tarefas Pendentes
     event.reply('pending-tasks', JSON.stringify(tarefasPendentes))
 })
-/*Fim do READ */
+/* Fim do READ */
 
 
-/*Começo do UPDATE*/
-//3º - CRUD UPDATE
+         /* -------------------------------------------------------- 2º ETAPA DO CRUD --------------------------------------------------------------  */
+
+                                                                    /* ------------- */
+
+         /* -------------------------------------------------------- 3º ETAPA DO CRUD --------------------------------------------------------------  */
+/* Início do UPDATE */
 //Passo 3 do Slide - Receber o pedido do Renderer para editar a Tarefa no Banco de Dados
 ipcMain.on('update-task', async (event, args) => {
     console.log(args) //Teste de recebimento dos Dados do Formulário
@@ -284,14 +291,14 @@ ipcMain.on('update-task', async (event, args) => {
         event.reply('update-task-success', JSON.stringify(tarefaEditada))
     }
 })
-/*Fim do UPDATE */
+/* Fim do UPDATE */
 
+         /* -------------------------------------------------------- 3º ETAPA DO CRUD --------------------------------------------------------------  */
 
+                                                                    /* ------------- */
 
-
-//06/03
-/*Começo do DELETE */
-//4º - CRUD DELETE
+         /* -------------------------------------------------------- 4º ETAPA DO CRUD --------------------------------------------------------------  */
+/*Início do DELETE */
 //Passo 2 do Slide - Receber o pedido do Renderer para excluir uma tarefa do Banco de Dados:
 ipcMain.on('delete-task', async (event, args) => {
     console.log(args)   //Simples teste de recebimento do Id (Passo 2)
@@ -303,12 +310,13 @@ ipcMain.on('delete-task', async (event, args) => {
         title: 'Confirmação de exclusão',
         message: 'Tem certeza de que deseja excluir esta Tarefa?'
     })
-
-    console.log(response)   //Apoio a lógica
+    console.log(response)
     if (response === 1) {
-        const tarefaExcluida = await Tarefa.findByIdAndDelete(args) //Passo 3 Excluir a Tarefa do Banco do Dados e enviar uma resposta para o Renderer e Atualizar a lista de Tarefas pendentes
+        const tarefaExcluida = await Tarefa.findByIdAndDelete(args) //Passo 3 Excluir a Tarefa do Banco do Dados e enviar uma resposta para o Renderer
+        //e Atualizar a lista de Tarefas pendentes
         event.reply('delete-task-success', JSON.stringify(tarefaExcluida))
-
     }
 })
 /*Fim do DELETE */
+
+         /* -------------------------------------------------------- 4º ETAPA DO CRUD --------------------------------------------------------------  */
