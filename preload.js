@@ -3,9 +3,6 @@ window.addEventListener('DOMContentLoaded',() =>{
     const dataAtual = document.getElementById('data').innerHTML = obterDataAtual()
 })
 
-
-
-
 //Função do JavaScript que pega a data do sistema
 function obterDataAtual(){
     const data = new Date()
